@@ -2,6 +2,7 @@ package com.mygdx.game.actors;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Fixture;
@@ -11,36 +12,35 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import static com.mygdx.game.Constants.PIXELS_IN_METRE;
 
-public class GroundActor extends Actor {
+public class BulletActor extends Actor {
 
-    private Texture ground, overground;
+    private Texture texture;
     private World world;
     private Body body;
     private Fixture fixture;
 
-    public GroundActor(World world, Texture ground, Texture overground, float x, float y, float width, float height) {
+    public BulletActor(World world, Texture texture, Vector2 position) {
         this.world = world;
-        this.ground = ground;
-        this.overground = overground;
+        this.texture = texture;
 
         BodyDef def = new BodyDef();
-        def.position.set(x + width / 2, y - height / 2);
+        def.position.set(position);
+        def.type = BodyDef.BodyType.KinematicBody;
         body = world.createBody(def);
 
         PolygonShape box = new PolygonShape();
-        box.setAsBox(width / 2,height / 2);
+        box.setAsBox(0.5f,0.5f);
         fixture = body.createFixture(box, 1);
-        fixture.setUserData("ground");
+        fixture.setUserData("bullet");
         box.dispose();
 
-        setSize(width * PIXELS_IN_METRE, height * PIXELS_IN_METRE);
-        setPosition(x * PIXELS_IN_METRE, (y - height) * PIXELS_IN_METRE);
+        setSize(PIXELS_IN_METRE, PIXELS_IN_METRE);
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(ground, getX(), getY(), getWidth(), getHeight());
-        batch.draw(overground, getX(), getY() + getHeight() * 0.8f, getWidth(), getHeight() * 0.2f);
+        setPosition((body.getPosition().x -0.5f) * PIXELS_IN_METRE, (body.getPosition().y -0.5f) * PIXELS_IN_METRE);
+        batch.draw(texture, getX(), getY(), getWidth(), getHeight());
     }
 
     public void detach(){

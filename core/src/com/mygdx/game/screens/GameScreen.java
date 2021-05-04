@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import com.mygdx.game.Constants;
 import com.mygdx.game.Main;
+import com.mygdx.game.actors.BulletActor;
 import com.mygdx.game.actors.PlayerActor;
 
 public class GameScreen extends BaseScreen {
@@ -23,53 +24,59 @@ public class GameScreen extends BaseScreen {
     private World world;
 
     private PlayerActor player;
+    private BulletActor bullet;
 
     public GameScreen(Main game) {
         super(game);
         stage = new Stage(new FitViewport(640, 360));
         world = new World(new Vector2(0, -10), true);
 
-        world.setContactListener(new ContactListener() {
-
-            private boolean isCollide(Contact contact, String userA, String userB){
-                return (contact.getFixtureA().getUserData().equals(userA) && contact.getFixtureB().getUserData().equals(userB) ||
-                        contact.getFixtureA().getUserData().equals(userB) && contact.getFixtureB().getUserData().equals(userA));
-            }
-
-            @Override
-            public void beginContact(Contact contact) {
-                if (isCollide(contact, "player", "ground")){
-                    player.setCanJump(true);
-                    if (Gdx.input.isTouched()){
-                        player.setAutoJump(true);
-                    }
-                }
-                if (isCollide(contact, "player", "spike")){
-                    player.setAlive(false);
-                }
-            }
-
-            @Override
-            public void endContact(Contact contact) {
-
-            }
-
-            @Override
-            public void preSolve(Contact contact, Manifold oldManifold) {
-
-            }
-
-            @Override
-            public void postSolve(Contact contact, ContactImpulse impulse) {
-
-            }
-        });
+        //это обработка столкновений
+//        world.setContactListener(new ContactListener() {
+//
+//            private boolean isCollide(Contact contact, String userA, String userB){
+//                return (contact.getFixtureA().getUserData().equals(userA) && contact.getFixtureB().getUserData().equals(userB) ||
+//                        contact.getFixtureA().getUserData().equals(userB) && contact.getFixtureB().getUserData().equals(userA));
+//            }
+//
+//            @Override
+//            public void beginContact(Contact contact) {
+//                if (isCollide(contact, "player", "ground")){
+//                    player.setCanJump(true);
+//                    if (Gdx.input.isTouched()){
+//                        player.setAutoJump(true);
+//                    }
+//                }
+//                if (isCollide(contact, "player", "spike")){
+//                    player.setAlive(false);
+//                }
+//            }
+//
+//            @Override
+//            public void endContact(Contact contact) {
+//
+//            }
+//
+//            @Override
+//            public void preSolve(Contact contact, Manifold oldManifold) {
+//
+//            }
+//
+//            @Override
+//            public void postSolve(Contact contact, ContactImpulse impulse) {
+//
+//            }
+//        });
     }
 
     @Override
     public void show() {
         Texture playerTexture = game.getManager().get("platform.png");
+        Texture bulletTexture = game.getManager().get("ball.png");
         player = new PlayerActor(world, playerTexture, new Vector2(1.5f, 1.5f));
+        bullet = new BulletActor(world, bulletTexture, new Vector2(1.5f, 2.5f));
+        stage.addActor(player);
+        stage.addActor(player);
 
     }
 
@@ -81,10 +88,6 @@ public class GameScreen extends BaseScreen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        if (player.getX() > 150 && player.isAlive()) {
-            stage.getCamera().translate(Constants.PLAYER_SPEED * delta * Constants.PIXELS_IN_METRE, 0, 0);
-        }
 
         stage.act();
         world.step(delta, 6, 2);

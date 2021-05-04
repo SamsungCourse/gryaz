@@ -28,8 +28,8 @@ public class Box2DScreen extends BaseScreen {
     private Box2DDebugRenderer renderer;
     private OrthographicCamera camera;
 
-    private Body playerBody, groundBody, spikeBody;
-    private Fixture playerFixture, groundFixture, spikeFixture;
+    private Body playerBody, bulletBody;
+    private Fixture platformFixture, groundFixture, bulletFixture;
 
     private boolean canJump = true;
     private boolean isAlive = true;
@@ -41,64 +41,55 @@ public class Box2DScreen extends BaseScreen {
         camera = new OrthographicCamera(16, 9);
         camera.translate(0, 1);
 
-        world.setContactListener(new ContactListener() {
-            @Override
-            public void beginContact(Contact contact) {
-                Fixture fixtureA = contact.getFixtureA();
-                Fixture fixtureB = contact.getFixtureB();
-
-                if ((fixtureA.getUserData().equals("player") && fixtureB.getUserData().equals("ground")) ||
-                        (fixtureA.getUserData().equals("ground") && fixtureB.getUserData().equals("player"))){
-                    canJump = true;
-                }
-
-                if ((fixtureA.getUserData().equals("player") && fixtureB.getUserData().equals("spike")) ||
-                        (fixtureA.getUserData().equals("spike") && fixtureB.getUserData().equals("player"))){
-                    isAlive = false;
-                }
-            }
-
-            @Override
-            public void endContact(Contact contact) {
-
-            }
-
-            @Override
-            public void preSolve(Contact contact, Manifold oldManifold) {
-
-            }
-
-            @Override
-            public void postSolve(Contact contact, ContactImpulse impulse) {
-
-            }
-        });
+//страшная хрень тут проверяет столкновения
+//        world.setContactListener(new ContactListener() {
+//            @Override
+//            public void beginContact(Contact contact) {
+//                Fixture fixtureA = contact.getFixtureA();
+//                Fixture fixtureB = contact.getFixtureB();
+//
+//                if ((fixtureA.getUserData().equals("player") && fixtureB.getUserData().equals("ground")) ||
+//                        (fixtureA.getUserData().equals("ground") && fixtureB.getUserData().equals("player"))){
+//                    canJump = true;
+//                }
+//
+//                if ((fixtureA.getUserData().equals("player") && fixtureB.getUserData().equals("spike")) ||
+//                        (fixtureA.getUserData().equals("spike") && fixtureB.getUserData().equals("player"))){
+//                    isAlive = false;
+//                }
+//            }
+//
+//            @Override
+//            public void endContact(Contact contact) {
+//
+//            }
+//
+//            @Override
+//            public void preSolve(Contact contact, Manifold oldManifold) {
+//
+//            }
+//
+//            @Override
+//            public void postSolve(Contact contact, ContactImpulse impulse) {
+//
+//            }
+//        });
 
         playerBody = world.createBody(createPlayerBodyDef());
-        groundBody = world.createBody(createDownBodyDef());
-        spikeBody = world.createBody(createSpikeBodyDef(5));
+        bulletBody = world.createBody(createBulletBodyDef());
 
         PolygonShape playerShape = new PolygonShape();
         playerShape.setAsBox(0.5f,0.5f);
-        playerFixture = playerBody.createFixture(playerShape, 1);
+        platformFixture = playerBody.createFixture(playerShape, 1);
+        bulletFixture = bulletBody.createFixture(playerShape, 1);
         playerShape.dispose();
 
         PolygonShape groundShape = new PolygonShape();
         groundShape.setAsBox(500,1);
-        groundFixture = groundBody.createFixture(groundShape, 1);
         groundShape.dispose();
 
-        spikeFixture = createSpikeFixture(spikeBody);
-
-        playerFixture.setUserData("player");
-        spikeFixture.setUserData("spike");
-        groundFixture.setUserData("ground");
-    }
-
-    private BodyDef createSpikeBodyDef(float x) {
-        BodyDef def = new BodyDef();
-        def.position.set(x, 0.5f);
-        return def;
+        platformFixture.setUserData("platform");
+        bulletFixture.setUserData("bullet");
     }
 
     private BodyDef createPlayerBodyDef() {
@@ -108,34 +99,19 @@ public class Box2DScreen extends BaseScreen {
         return def;
     }
 
-    private BodyDef createDownBodyDef() {
+    private BodyDef createBulletBodyDef() {
         BodyDef def = new BodyDef();
-        def.position.set(0, -1);
+        def.position.set(-5, 2);
+        def.type = BodyDef.BodyType.DynamicBody;
         return def;
-    }
-
-    private Fixture createSpikeFixture(Body spikeBody){
-        Vector2[] vectors = new Vector2[3];
-
-        vectors[0] = new Vector2(-0.5f, -0.5f);
-        vectors[1] = new Vector2(0.5f, -0.5f);
-        vectors[2] = new Vector2(0, 0.5f);
-
-        PolygonShape shape = new PolygonShape();
-        shape.set(vectors);
-        Fixture fixture = spikeBody.createFixture(shape, 1);
-        shape.dispose();
-        return fixture;
     }
 
     @Override
     public void dispose() {
-        spikeBody.destroyFixture(spikeFixture);
-        playerBody.destroyFixture(playerFixture);
-        groundBody.destroyFixture(groundFixture);
+        bulletBody.destroyFixture(bulletFixture);
+        playerBody.destroyFixture(platformFixture);
         world.destroyBody(playerBody);
-        world.destroyBody(groundBody);
-        world.destroyBody(spikeBody);
+        world.destroyBody(bulletBody);
         world.dispose();
         renderer.dispose();
     }
@@ -147,8 +123,7 @@ public class Box2DScreen extends BaseScreen {
         if(Gdx.input.isTouched()) {
             Vector3 touchPos = new Vector3();
             touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-            camera.unproject(touchPos);
-            player = touchPos.x - 64 / 2;
+            camera.unproject(touchPos); //перемещение перса тут будет
         }
 
         if (isAlive) {
