@@ -18,11 +18,9 @@ public class Main extends Game {
 	public void create () {
 
 		manager = new AssetManager();
-		manager.load("player.png", Texture.class);
-		manager.load("spike.png", Texture.class);
 		manager.load("background.jpg", Texture.class);
-		manager.load("ground.png", Texture.class);
-		manager.load("overground.png", Texture.class);
+		manager.load("ball.png", Texture.class);
+		manager.load("platform.png", Texture.class);
 		manager.finishLoading();
 
 		setScreen(new GameScreen(this));

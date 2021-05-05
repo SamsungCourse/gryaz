@@ -60,8 +60,8 @@ public class PlayerActor extends Actor {
         }
 
         if (alive){
-            float speedY = body.getLinearVelocity().y;
-            body.setLinearVelocity(PLAYER_SPEED, speedY);
+//            float speedY = body.getLinearVelocity().y;
+//            body.setLinearVelocity(PLAYER_SPEED, speedY);
         }
     }
 

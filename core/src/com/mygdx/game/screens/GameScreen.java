@@ -73,10 +73,10 @@ public class GameScreen extends BaseScreen {
     public void show() {
         Texture playerTexture = game.getManager().get("platform.png");
         Texture bulletTexture = game.getManager().get("ball.png");
-        player = new PlayerActor(world, playerTexture, new Vector2(1.5f, 1.5f));
-        bullet = new BulletActor(world, bulletTexture, new Vector2(1.5f, 2.5f));
+        player = new PlayerActor(world, playerTexture, new Vector2(0, 0));
+        bullet = new BulletActor(world, bulletTexture, new Vector2(0f, 0));
         stage.addActor(player);
-        stage.addActor(player);
+        stage.addActor(bullet);
 
     }
 
