@@ -28,7 +28,7 @@ public class GameScreen extends BaseScreen {
 
     public GameScreen(Main game) {
         super(game);
-        stage = new Stage(new FitViewport(640, 360));
+        stage = new Stage(new FitViewport(Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT));
         world = new World(new Vector2(0, -10), true);
 
         //это обработка столкновений
@@ -73,8 +73,8 @@ public class GameScreen extends BaseScreen {
     public void show() {
         Texture playerTexture = game.getManager().get("platform.png");
         Texture bulletTexture = game.getManager().get("ball.png");
-        player = new PlayerActor(world, playerTexture, new Vector2(0, 0));
-        bullet = new BulletActor(world, bulletTexture, new Vector2(0f, 0));
+        player = new PlayerActor(world, playerTexture, new Vector2(Constants.SCREEN_WIDTH / (2 * Constants.PIXELS_IN_METRE) - 6.6f, 5f));
+        bullet = new BulletActor(world, bulletTexture, new Vector2(Constants.SCREEN_WIDTH / (2 * Constants.PIXELS_IN_METRE) - 2.2f, 10f));
         stage.addActor(player);
         stage.addActor(bullet);
 
@@ -86,7 +86,7 @@ public class GameScreen extends BaseScreen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 1, 1);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         stage.act();

@@ -11,9 +11,11 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
+import static com.mygdx.game.Constants.HEIGHT_OF_PLATFORM;
 import static com.mygdx.game.Constants.IMPULSE_JUMP;
 import static com.mygdx.game.Constants.PIXELS_IN_METRE;
 import static com.mygdx.game.Constants.PLAYER_SPEED;
+import static com.mygdx.game.Constants.WIDTH_OF_PLATFORM;
 
 public class PlayerActor extends Actor {
 
@@ -38,18 +40,18 @@ public class PlayerActor extends Actor {
         body = world.createBody(def);
 
         PolygonShape box = new PolygonShape();
-        box.setAsBox(0.5f,0.5f);
+        box.setAsBox((float)(HEIGHT_OF_PLATFORM / 2),(float)(WIDTH_OF_PLATFORM / 2));
         fixture = body.createFixture(box, 1);
         fixture.setUserData("platform");
         box.dispose();
 
-        setSize(PIXELS_IN_METRE, PIXELS_IN_METRE);
+        setSize(WIDTH_OF_PLATFORM, HEIGHT_OF_PLATFORM);
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
         setPosition((body.getPosition().x -0.5f) * PIXELS_IN_METRE, (body.getPosition().y -0.5f) * PIXELS_IN_METRE);
-        batch.draw(texture, getX(), getY(), getWidth(), getHeight());
+        batch.draw(texture, getX(), getY(), WIDTH_OF_PLATFORM, HEIGHT_OF_PLATFORM);
     }
 
     @Override
@@ -59,10 +61,6 @@ public class PlayerActor extends Actor {
             jump();
         }
 
-        if (alive){
-//            float speedY = body.getLinearVelocity().y;
-//            body.setLinearVelocity(PLAYER_SPEED, speedY);
-        }
     }
 
     private void jump(){
