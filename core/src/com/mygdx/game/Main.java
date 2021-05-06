@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 
 import com.mygdx.game.screens.GameScreen;
 
-public class Main extends Game {
+public class Main extends Game {//этот клass загружает ассеты при запуске приложения, чтобы потом не тормозить игру, еще он запускается первым
 
 	private AssetManager manager;
 

@@ -4,7 +4,7 @@ import com.badlogic.gdx.Screen;
 
 import com.mygdx.game.Main;
 
-public class BaseScreen implements Screen {
+public class BaseScreen implements Screen {//это класс экрана, от которого наследуются все остальные, он нам нужен, чтобы не перегружать лишними методами другие классы
 
     protected Main game;
 

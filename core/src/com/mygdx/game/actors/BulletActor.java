@@ -29,32 +29,27 @@ public class BulletActor extends Actor {
         BodyDef def = new BodyDef();
         def.position.set(position);
         def.type = BodyDef.BodyType.KinematicBody;
-        body = world.createBody(def);
+        body = world.createBody(def);//создаем наш обьект(тело)
 
-        PolygonShape box = new PolygonShape();
-        box.setAsBox((float)(SIZE_OF_BULLET / 2), (float)(SIZE_OF_BULLET / 2));
-        fixture = body.createFixture(box, 1);
-        fixture.setUserData("bullet");
-        box.dispose();
+        PolygonShape box = new PolygonShape();//создаем коробку
+        box.setAsBox((float)(SIZE_OF_BULLET / 2), (float)(SIZE_OF_BULLET / 2));//даем координаты центра обьекта
+        fixture = body.createFixture(box, 1);//создаем хитбокс ака Fixture, даем плотность
+        fixture.setUserData("bullet");//даем ему название, чтобы в дальнейшем по нему обрабатывать столкновения
+        box.dispose();//анигилруем ненужную коробку
 
         setSize(SIZE_OF_BULLET, SIZE_OF_BULLET);
     }
 
     @Override
-    public void act(float delta) {
+    public void act(float delta) {//метод, который отвечает за все действия актера
         float x = (float) (bulletSpeed * Math.sin(Math.toRadians(angle)));
         float y = (float) (bulletSpeed * Math.cos(Math.toRadians(angle)));
         body.setLinearVelocity(x, y);
     }
 
     @Override
-    public void draw(Batch batch, float parentAlpha) {
+    public void draw(Batch batch, float parentAlpha) {//рисуем пулю
         setPosition((body.getPosition().x -0.5f) * PIXELS_IN_METRE, (body.getPosition().y -0.5f) * PIXELS_IN_METRE);
         batch.draw(texture, getX(), getY(), SIZE_OF_BULLET, SIZE_OF_BULLET);
-    }
-
-    public void detach(){
-        body.destroyFixture(fixture);
-        world.destroyBody(body);
     }
 }

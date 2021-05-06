@@ -18,7 +18,7 @@ import com.badlogic.gdx.physics.box2d.World;
 
 import com.mygdx.game.Main;
 
-public class Box2DScreen extends BaseScreen {
+public class Box2DScreen extends BaseScreen { //это чисто тетовый класс для дебагинга, его пока не трогаем
 
     public Box2DScreen(Main game){
         super(game);

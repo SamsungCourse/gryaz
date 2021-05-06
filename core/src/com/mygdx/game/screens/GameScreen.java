@@ -15,24 +15,24 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.game.Constants;
 import com.mygdx.game.Main;
 import com.mygdx.game.actors.BulletActor;
-import com.mygdx.game.actors.PlayerActor;
+import com.mygdx.game.actors.PlatformActor;
 
 public class GameScreen extends BaseScreen {
 
     private Stage stage;
     private World world;
 
-    private PlayerActor platform;
+    private PlatformActor platform;
     private BulletActor bullet;
 
-    public GameScreen(Main game) {
+    public GameScreen(Main game) {//основной экран для игровой логики, он вызывается классом main
         super(game);
-        stage = new Stage(new FitViewport(Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT));
-        world = new World(new Vector2(0, -10), true);
+        stage = new Stage(new FitViewport(Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT));//создаем сцену даем вьюпорт размера экрана
+        world = new World(new Vector2(0, 0), true);//мы создаем мир и даем нулевую гравитацю(гравитация это обьект Vector2)
 
-        world.setContactListener(new ContactListener() {
+        world.setContactListener(new ContactListener() {//контакт лисенер реагирует на хитбоксы обьектов с тегами, которые мы указали
 
-            private boolean isCollide(Contact contact, String userA, String userB){
+            private boolean isCollide(Contact contact, String userA, String userB){//здесь ничего не менять, это метод, который делает всю логику для последующих
                 return (contact.getFixtureA().getUserData().equals(userA) && contact.getFixtureB().getUserData().equals(userB) ||
                         contact.getFixtureA().getUserData().equals(userB) && contact.getFixtureB().getUserData().equals(userA));
             }
@@ -62,10 +62,10 @@ public class GameScreen extends BaseScreen {
     }
 
     @Override
-    public void show() {
+    public void show() { //этот метод создает все при появлении экрана, в частности создает платформу и пулю и добавляет их на сцену(stage)
         Texture playerTexture = game.getManager().get("platform.png");
         Texture bulletTexture = game.getManager().get("ball.png");
-        platform = new PlayerActor(world, playerTexture, new Vector2(Constants.SCREEN_WIDTH / (2 * Constants.PIXELS_IN_METRE) - 6.6f, 5f));
+        platform = new PlatformActor(world, playerTexture, new Vector2(Constants.SCREEN_WIDTH / (2 * Constants.PIXELS_IN_METRE) - 6.6f, 5f));
         bullet = new BulletActor(world, bulletTexture, new Vector2(Constants.SCREEN_WIDTH / (2 * Constants.PIXELS_IN_METRE) - 2.2f, 20f));
         stage.addActor(platform);
         stage.addActor(bullet);
@@ -73,11 +73,11 @@ public class GameScreen extends BaseScreen {
     }
 
     @Override
-    public void hide() {
+    public void hide() { //метод для логики при скрытии экрана, можно чтонибудь умное придумать с ним
     }
 
     @Override
-    public void render(float delta) {
+    public void render(float delta) { //с ним мы знакомы, он отвечает за динамику на сцене
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
