@@ -15,12 +15,12 @@ import static com.mygdx.game.Constants.SIZE_OF_BULLET;
 
 public class BulletActor extends Actor {
 
-    private static final float BULLET_SPEED = 8;
+    private float bulletSpeed = 8;
     private Texture texture;
     private World world;
     private Body body;
     private Fixture fixture;
-    double angle = 1;
+    public int angle = 180;
 
     public BulletActor(World world, Texture texture, Vector2 position) {
         this.world = world;
@@ -42,8 +42,8 @@ public class BulletActor extends Actor {
 
     @Override
     public void act(float delta) {
-        float x = (float)(BULLET_SPEED * Math.sin(angle));
-        float y = (float)(BULLET_SPEED * Math.cos(angle));
+        float x = (float) (bulletSpeed * Math.sin(Math.toRadians(angle)));
+        float y = (float) (bulletSpeed * Math.cos(Math.toRadians(angle)));
         body.setLinearVelocity(x, y);
     }
 

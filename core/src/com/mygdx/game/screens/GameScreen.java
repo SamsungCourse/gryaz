@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
@@ -23,7 +22,7 @@ public class GameScreen extends BaseScreen {
     private Stage stage;
     private World world;
 
-    private PlayerActor player;
+    private PlayerActor platform;
     private BulletActor bullet;
 
     public GameScreen(Main game) {
@@ -31,51 +30,44 @@ public class GameScreen extends BaseScreen {
         stage = new Stage(new FitViewport(Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT));
         world = new World(new Vector2(0, -10), true);
 
-        //это обработка столкновений
-//        world.setContactListener(new ContactListener() {
-//
-//            private boolean isCollide(Contact contact, String userA, String userB){
-//                return (contact.getFixtureA().getUserData().equals(userA) && contact.getFixtureB().getUserData().equals(userB) ||
-//                        contact.getFixtureA().getUserData().equals(userB) && contact.getFixtureB().getUserData().equals(userA));
-//            }
-//
-//            @Override
-//            public void beginContact(Contact contact) {
-//                if (isCollide(contact, "player", "ground")){
-//                    player.setCanJump(true);
-//                    if (Gdx.input.isTouched()){
-//                        player.setAutoJump(true);
-//                    }
-//                }
-//                if (isCollide(contact, "player", "spike")){
-//                    player.setAlive(false);
-//                }
-//            }
-//
-//            @Override
-//            public void endContact(Contact contact) {
-//
-//            }
-//
-//            @Override
-//            public void preSolve(Contact contact, Manifold oldManifold) {
-//
-//            }
-//
-//            @Override
-//            public void postSolve(Contact contact, ContactImpulse impulse) {
-//
-//            }
-//        });
+        world.setContactListener(new ContactListener() {
+
+            private boolean isCollide(Contact contact, String userA, String userB){
+                return (contact.getFixtureA().getUserData().equals(userA) && contact.getFixtureB().getUserData().equals(userB) ||
+                        contact.getFixtureA().getUserData().equals(userB) && contact.getFixtureB().getUserData().equals(userA));
+            }
+
+            @Override
+            public void beginContact(Contact contact) {
+                if (isCollide(contact, "platform", "bullet")){
+                    bullet.angle += 90;
+                    }
+                }
+
+            @Override
+            public void endContact(Contact contact) {
+
+            }
+
+            @Override
+            public void preSolve(Contact contact, Manifold oldManifold) {
+
+            }
+
+            @Override
+            public void postSolve(Contact contact, ContactImpulse impulse) {
+
+            }
+        });
     }
 
     @Override
     public void show() {
         Texture playerTexture = game.getManager().get("platform.png");
         Texture bulletTexture = game.getManager().get("ball.png");
-        player = new PlayerActor(world, playerTexture, new Vector2(Constants.SCREEN_WIDTH / (2 * Constants.PIXELS_IN_METRE) - 6.6f, 5f));
-        bullet = new BulletActor(world, bulletTexture, new Vector2(Constants.SCREEN_WIDTH / (2 * Constants.PIXELS_IN_METRE) - 2.2f, 10f));
-        stage.addActor(player);
+        platform = new PlayerActor(world, playerTexture, new Vector2(Constants.SCREEN_WIDTH / (2 * Constants.PIXELS_IN_METRE) - 6.6f, 5f));
+        bullet = new BulletActor(world, bulletTexture, new Vector2(Constants.SCREEN_WIDTH / (2 * Constants.PIXELS_IN_METRE) - 2.2f, 20f));
+        stage.addActor(platform);
         stage.addActor(bullet);
 
     }

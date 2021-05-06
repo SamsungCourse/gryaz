@@ -3,6 +3,7 @@ package com.mygdx.game.actors;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -15,6 +16,7 @@ import static com.mygdx.game.Constants.HEIGHT_OF_PLATFORM;
 import static com.mygdx.game.Constants.IMPULSE_JUMP;
 import static com.mygdx.game.Constants.PIXELS_IN_METRE;
 import static com.mygdx.game.Constants.PLAYER_SPEED;
+import static com.mygdx.game.Constants.SCREEN_WIDTH;
 import static com.mygdx.game.Constants.WIDTH_OF_PLATFORM;
 
 public class PlayerActor extends Actor {
@@ -56,11 +58,15 @@ public class PlayerActor extends Actor {
 
     @Override
     public void act(float delta) {
-        if (Gdx.input.justTouched() || autoJump){
-            autoJump = false;
-            jump();
+        if (Gdx.input.isTouched()){
+            Vector2 pos = body.getPosition();
+            float x = (Gdx.input.getX() - SCREEN_WIDTH/2)/PIXELS_IN_METRE + 10;
+            float speed = 0;
+            if (pos.x >= x) {speed += x - pos.x;}
+            if (pos.x < x) {speed -= pos.x - x;}
+            System.out.println(speed + " " + pos.x + " " + x);
+            body.setLinearVelocity(speed*2, 0);
         }
-
     }
 
     private void jump(){
